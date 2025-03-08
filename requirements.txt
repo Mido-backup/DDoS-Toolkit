@@ -1,0 +1,12 @@
+aiohttp
+asyncio
+scapy
+dnspython
+colorama
+tqdm
+openai
+psutil
+argparse
+dns.resolver
+hashlib
+zlib

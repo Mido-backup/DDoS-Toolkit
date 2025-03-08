@@ -2,19 +2,26 @@
 
 # ------------------------------------------------------
 #    DDoS Toolkit - Setup Script
-#    Coded by MIDO777
+#    Coded by LIONMAD
 #    This script sets up the environment for running the DDoS Toolkit
 # ------------------------------------------------------
+
+# Colors for stylish output
+YELLOW="\033[1;33m"
+GREEN="\033[1;32m"
+BLUE="\033[1;34m"
+RED="\033[1;31m"
+NC="\033[0m" # No Color
 
 # Function to display a banner
 function display_banner() {
     echo -e "\n"
-    echo -e "\033[1;34m######################################################"
+    echo -e "${BLUE}######################################################${NC}"
     echo -e "#                                                    #"
     echo -e "#                DDoS Toolkit Setup                 #"
-    echo -e "#               Coded by MIDO777                    #"
+    echo -e "#               Coded by LIONMAD                    #"
     echo -e "#                                                    #"
-    echo -e "######################################################\n"
+    echo -e "${BLUE}######################################################${NC}\n"
 }
 
 # Display the banner
@@ -22,44 +29,61 @@ display_banner
 
 # Ensure the script is being run as root or with sudo for system-wide installations
 if [[ $EUID -ne 0 ]]; then
-    echo -e "\033[1;31mError: This script must be run as root or with sudo.\033[0m"
+    echo -e "${RED}[ERROR] This script must be run as root or with sudo.${NC}"
     exit 1
 fi
 
 # Start installation
-echo -e "\033[1;32m[INFO]\033[0m Updating package list..."
+echo -e "${GREEN}[INFO]${NC} Updating package list..."
 apt-get update -y
 
 # Install system dependencies (if not already installed)
-echo -e "\033[1;32m[INFO]\033[0m Installing required system packages..."
+echo -e "${GREEN}[INFO]${NC} Installing required system packages..."
 apt-get install -y python3 python3-pip python3-venv libssl-dev libffi-dev build-essential
 
-# Upgrade pip to the latest version
-echo -e "\033[1;32m[INFO]\033[0m Upgrading pip..."
-pip3 install --upgrade pip
-
-# Install required Python packages with --break-system-packages to bypass system package conflicts
-echo -e "\033[1;32m[INFO]\033[0m Installing required Python packages..."
-pip3 install requests colorama dnspython cloudscraper --break-system-packages
-
-# Optional: Create a requirements.txt file (for easy re-installation)
-echo -e "\033[1;32m[INFO]\033[0m Creating requirements.txt..."
-pip3 freeze > requirements.txt
+# Install required Python packages
+echo -e "${GREEN}[INFO]${NC} Installing required Python packages..."
+pip3 install colorama dns.resolver argparse threading asyncio dnspython cloudscraper hashlib zlib aiohttp scapy tqdm psutil --break-system-packages
 
 # Function to create a symlink for easy access
 create_symlink() {
     echo -e "${YELLOW}[*] Creating symlink for easy access...${NC}"
-    sudo ln -sf "$(pwd)/ddos.py" /usr/local/bin/ddos
-    echo -e "${GREEN}[+] Symlink created! You can now run 'ddos' from anywhere.${NC}"
+
+    # Check if the source file exists
+    if [ ! -f "$(pwd)/ddos.py" ]; then
+        echo -e "${RED}[ERROR] ddos.py not found in the current directory.${NC}"
+        return 1
+    fi
+
+    # Remove existing symlink if present
+    if [ -L "/usr/local/bin/ddos" ]; then
+        echo -e "${YELLOW}[INFO] Removing existing symlink...${NC}"
+        sudo rm "/usr/local/bin/ddos"
+    fi
+
+    # Create a new symlink
+    sudo ln -s "$(pwd)/ddos.py" /usr/local/bin/ddos
+
+    # Verify symlink creation
+    if [ -L "/usr/local/bin/ddos" ]; then
+        echo -e "${GREEN}[SUCCESS] Symlink created! You can now run 'ddos' from anywhere.${NC}"
+    else
+        echo -e "${RED}[ERROR] Failed to create the symlink.${NC}"
+        return 1
+    fi
 }
 
-# Completion message with a stylish output
-echo -e "\033[1;32m[INFO]\033[0m Setup complete! The necessary packages have been installed system-wide."
-echo -e "\033[1;34mYou can now run the DDoS Toolkit script directly using:\033[0m"
-echo -e "\033[1;32mddos\033[0m"
+# Call the symlink creation function
+create_symlink
 
-echo -e "\n\033[1;34m######################################################"
+# Completion message with a stylish output
+echo -e "${GREEN}[INFO]${NC} Setup complete! The necessary packages have been installed system-wide."
+echo -e "${BLUE}You can now run the DDoS Toolkit script directly using:${NC}"
+echo -e "${GREEN}ddos${NC}"
+
+echo -e "\n${BLUE}######################################################${NC}"
 echo -e "#                                                    #"
 echo -e "#     DDoS Toolkit Setup is complete!               #"
+echo -e "#            LIONMAD SALUTES YOU                    #"
 echo -e "#                                                    #"
-echo -e "######################################################\n"
+echo -e "${BLUE}######################################################${NC}\n"
