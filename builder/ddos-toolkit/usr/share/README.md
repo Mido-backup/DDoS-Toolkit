@@ -1,5 +1,5 @@
 <p align="center">
-<img src="/test/imgs.jpg">
+<img src="/img/imgs.jpg">
 </p>
 
 <p align="center">
@@ -16,9 +16,7 @@
 
 **DDoS Toolkit** is a powerful and customizable tool designed to simulate various types of Distributed Denial of Service (DDoS) attacks, including HTTP/HTTP2 Flood, Slowloris, UDP Flood, SYN Flood, SSH Flood, SSL Flood, and FTP Flood. It offers features like rate-limited attacks, proxy support, custom payload generation, and system resource monitoring, making it suitable for testing and research purposes in ethical cybersecurity simulations.
 
-> 🚨 **Note:** The author is not responsible for any misuse of this tool.Use at your own risk.
-
-> 🚨 **Note:** This tool's configuration includes file paths specifically set for /opt/DDoS-Toolkit/. Several key functionalities will not work properly unless the tool's directory is located in the /opt directory or installed via Debian pkg.
+> 🚨 **Note:** The author is not responsible for any misuse of this tool. Use at your own risk.
 
 ---
 
@@ -75,22 +73,11 @@ sudo chmod +x *
 
 ### 2. Install dependencies:
 ```bash
-sudo ./setup install
+pip install -r requirements.txt --break-system-packages
 ```
-
-### 3. Build Debian PKG
-If u have a Debian distro u can automase the below with this command:
+and
 ```bash
-cd builder
-```
-```bash
-chmod +x builder.sh
-```
-```bash
-sudo ./builder.sh
-```
-```bash
-dpkg -i ddos-toolkit.deb
+sudo python3 setup.py install
 ```
 
 If you encounter an error related to missing modules or dependencies, you can install each one individually. For example:
